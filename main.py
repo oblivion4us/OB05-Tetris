@@ -19,10 +19,10 @@ COLORS = [
     (0, 255, 255),  # Бирюзовый
     (255, 165, 0),  # Оранжевый
     (255, 255, 0),  # Желтый
-    (0, 255, 0),    # Зеленый
-    (0, 0, 255),    # Синий
+    (0, 255, 0),  # Зеленый
+    (0, 0, 255),  # Синий
     (128, 0, 128),  # Фиолетовый
-    (255, 0, 0)     # Красный
+    (255, 0, 0)  # Красный
 ]
 
 # Создание окна
@@ -84,10 +84,12 @@ def remove_full_lines(grid):
 
 
 def draw_grid(surface, grid):
+    border_color = WHITE if current_theme == 'dark' else BLACK
     for y, row in enumerate(grid):
         for x, cell in enumerate(row):
             if cell:
                 pygame.draw.rect(surface, cell, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+                pygame.draw.rect(surface, border_color, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
 
 def draw_tetromino(surface, tetromino):
@@ -96,24 +98,31 @@ def draw_tetromino(surface, tetromino):
         for x, cell in enumerate(row):
             if cell:
                 pygame.draw.rect(surface, tetromino.color,
-                                 ((tetromino.x + x) * BLOCK_SIZE, (tetromino.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+                                 ((tetromino.x + x) * BLOCK_SIZE, (tetromino.y + y) * BLOCK_SIZE, BLOCK_SIZE,
+                                  BLOCK_SIZE))
                 pygame.draw.rect(surface, border_color,
-                                 ((tetromino.x + x) * BLOCK_SIZE, (tetromino.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                                 ((tetromino.x + x) * BLOCK_SIZE, (tetromino.y + y) * BLOCK_SIZE, BLOCK_SIZE,
+                                  BLOCK_SIZE), 1)
 
 
 def main_menu():
+    global screen
+    # Увеличиваем размеры экрана для меню
+    menu_width, menu_height = WIDTH + 100, HEIGHT + 100
+    screen = pygame.display.set_mode((menu_width, menu_height))
+
     while True:
         screen.fill(BLACK if current_theme == 'dark' else WHITE)
 
-        font = pygame.font.SysFont(None, 55)
+        font = pygame.font.SysFont(None, 75)
         title = font.render('Тетрис', True, WHITE if current_theme == 'dark' else BLACK)
-        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, HEIGHT // 4))
+        screen.blit(title, (menu_width // 2 - title.get_width() // 2, menu_height // 4))
 
-        button_font = pygame.font.SysFont(None, 35)
+        button_font = pygame.font.SysFont(None, 45)
 
-        start_button = pygame.Rect(WIDTH // 4, HEIGHT // 2 - 60, WIDTH // 2, 50)
-        theme_button = pygame.Rect(WIDTH // 4, HEIGHT // 2, WIDTH // 2, 50)
-        quit_button = pygame.Rect(WIDTH // 4, HEIGHT // 2 + 60, WIDTH // 2, 50)
+        start_button = pygame.Rect(menu_width // 4, menu_height // 2 - 80, menu_width // 2, 60)
+        theme_button = pygame.Rect(menu_width // 4, menu_height // 2, menu_width // 2, 60)
+        quit_button = pygame.Rect(menu_width // 4, menu_height // 2 + 80, menu_width // 2, 60)
 
         pygame.draw.rect(screen, WHITE if current_theme == 'dark' else BLACK, start_button)
         pygame.draw.rect(screen, WHITE if current_theme == 'dark' else BLACK, theme_button)
@@ -128,18 +137,21 @@ def main_menu():
         screen.blit(quit_text, (quit_button.x + (quit_button.width - quit_text.get_width()) // 2, quit_button.y + 10))
 
         pygame.display.flip()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.collidepoint(event.pos):
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Возвращаемся к игровому размеру экрана
                     return  # Начать игру
                 if theme_button.collidepoint(event.pos):
                     change_theme()  # Изменить тему
                 if quit_button.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
+
 
 def change_theme():
     global current_theme, BLACK, WHITE
@@ -217,10 +229,12 @@ def main():
                 if check_collision(grid, current_tetromino):
                     grid = [[0] * COLUMNS for _ in range(ROWS)]  # Здесь можно реализовать конец игры и вывод результата
             last_time = current_time
+
         screen.fill(BLACK if current_theme == 'dark' else WHITE)
         draw_grid(screen, grid)
         draw_tetromino(screen, current_tetromino)
         pygame.display.flip()
+
 
 if __name__ == '__main__':
     main_menu()
