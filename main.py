@@ -118,23 +118,23 @@ def main_menu():
         title = font.render('Тетрис', True, WHITE if current_theme == 'dark' else BLACK)
         screen.blit(title, (menu_width // 2 - title.get_width() // 2, menu_height // 4))
 
-        button_font = pygame.font.SysFont(None, 45)
+        button_font = pygame.font.SysFont(None, 40)
 
-        start_button = pygame.Rect(menu_width // 4, menu_height // 2 - 80, menu_width // 2, 60)
-        theme_button = pygame.Rect(menu_width // 4, menu_height // 2, menu_width // 2, 60)
-        quit_button = pygame.Rect(menu_width // 4, menu_height // 2 + 80, menu_width // 2, 60)
+        start_button = pygame.Rect(menu_width // 4, menu_height // 2 - 80, menu_width // 2, 50)
+        theme_button = pygame.Rect(menu_width // 4, menu_height // 2, menu_width // 2, 50)
+        quit_button = pygame.Rect(menu_width // 4, menu_height // 2 + 80, menu_width // 2, 50)
 
         pygame.draw.rect(screen, WHITE if current_theme == 'dark' else BLACK, start_button)
         pygame.draw.rect(screen, WHITE if current_theme == 'dark' else BLACK, theme_button)
         pygame.draw.rect(screen, WHITE if current_theme == 'dark' else BLACK, quit_button)
 
         start_text = button_font.render('Начать игру', True, BLACK if current_theme == 'dark' else WHITE)
-        theme_text = button_font.render('Изменить тему', True, BLACK if current_theme == 'dark' else WHITE)
+        theme_text = button_font.render('Сменить тему', True, BLACK if current_theme == 'dark' else WHITE)
         quit_text = button_font.render('Выйти', True, BLACK if current_theme == 'dark' else WHITE)
 
-        screen.blit(start_text, (start_button.x + (start_button.width - start_text.get_width()) // 2, start_button.y + 10))
-        screen.blit(theme_text, (theme_button.x + (theme_button.width - theme_text.get_width()) // 2, theme_button.y + 10))
-        screen.blit(quit_text, (quit_button.x + (quit_button.width - quit_text.get_width()) // 2, quit_button.y + 10))
+        screen.blit(start_text, (start_button.x + (start_button.width - start_text.get_width()) // 2, start_button.y + 5))
+        screen.blit(theme_text, (theme_button.x + (theme_button.width - theme_text.get_width()) // 2, theme_button.y + 5))
+        screen.blit(quit_text, (quit_button.x + (quit_button.width - quit_text.get_width()) // 2, quit_button.y + 5))
 
         pygame.display.flip()
 
@@ -147,7 +147,7 @@ def main_menu():
                     screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Возвращаемся к игровому размеру экрана
                     return  # Начать игру
                 if theme_button.collidepoint(event.pos):
-                    change_theme()  # Изменить тему
+                    change_theme()  # Сменить тему
                 if quit_button.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
@@ -157,10 +157,8 @@ def change_theme():
     global current_theme, BLACK, WHITE
     if current_theme == 'dark':
         current_theme = 'light'
-        BLACK, WHITE = WHITE, BLACK
     else:
         current_theme = 'dark'
-        BLACK, WHITE = WHITE, BLACK
 
 
 def pause_menu():
@@ -234,7 +232,6 @@ def main():
         draw_grid(screen, grid)
         draw_tetromino(screen, current_tetromino)
         pygame.display.flip()
-
 
 if __name__ == '__main__':
     main_menu()
